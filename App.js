@@ -1,12 +1,57 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Pressable, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './src/Components/LoginRegistration/HomeScreen/HomeScreen';
+import LoginScreen from './src/Components/LoginRegistration/LoginScreen/LoginScreen';
+import SignUp from './src/Components/LoginRegistration/SignUp/SignUp';
+import EventsPage from './src/Components/Screens/EventsPage/EventPage'
+import { signOut } from 'firebase/auth';
+import { auth } from './src/database/config'
 
+const Stack = createNativeStackNavigator();
 export default function App() {
+
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        {/* Main Home Screen */}
+        <Stack.Screen name="Home" component={HomeScreen} />
+        {/* Login Screen */}
+        <Stack.Screen name="Login"
+          component={LoginScreen}
+          options={{
+            headerShown: false
+          }}
+        />
+        {/* Sign-Up Screen */}
+        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen
+          name="EventsPage"
+          component={EventsPage}
+          options={({ navigation }) => ({
+            headerShown: true,
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => {
+                  signOut(auth)
+                    .then(() => {
+                      console.log('User logged out');
+                      navigation.navigate('Login'); // Navigate to Login after logout
+                    })
+                    .catch((error) => {
+                      console.error("Error logging out:", error.message); // Log the error message
+                    });
+                }}
+              >
+                <Text>Logout</Text>
+              </TouchableOpacity>
+            ),
+          })}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
