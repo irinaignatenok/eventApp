@@ -1,10 +1,10 @@
 import { View, Text, Pressable } from 'react-native';
 
 
-export default function HomeScreen({ navigation }) {
+export default function Favorite({ navigation }) {
     return (
         <View >
-            <Text>Welcome</Text>
+            <Text>Favorite </Text>
         </View>
     );
 };

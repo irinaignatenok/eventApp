@@ -23,6 +23,11 @@ export default StyleSheet.create({
         fontWeight: "bold",
         color: "white",
     },
+    textTitle: {
+        fontSize: 20,
+        color: '#fff',
+        fontWeight: 'bold',
+    },
     inputText: {
         width: "80%",
         padding: 10,

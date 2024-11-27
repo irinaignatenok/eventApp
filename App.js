@@ -5,11 +5,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './src/Components/LoginRegistration/HomeScreen/HomeScreen';
 import LoginScreen from './src/Components/LoginRegistration/LoginScreen/LoginScreen';
 import SignUp from './src/Components/LoginRegistration/SignUp/SignUp';
-import EventsPage from './src/Components/Screens/EventsPage/EventPage'
 import { signOut } from 'firebase/auth';
-import { auth } from './src/database/config'
+import { auth } from './src/database/config';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import TabNavigator from './src/Components/Screens/TabNavigator/TabNavigator';
 
 const Stack = createNativeStackNavigator();
+
 export default function App() {
 
 
@@ -28,8 +30,8 @@ export default function App() {
         {/* Sign-Up Screen */}
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen
-          name="EventsPage"
-          component={EventsPage}
+          name="MainTabs"
+          component={TabNavigator}
           options={({ navigation }) => ({
             headerShown: true,
             headerLeft: () => (
@@ -51,6 +53,7 @@ export default function App() {
           })}
         />
       </Stack.Navigator>
+
     </NavigationContainer>
   );
 }

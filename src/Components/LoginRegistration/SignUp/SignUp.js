@@ -61,7 +61,7 @@ export default function SignUp({ navigation }) {
                 error: "",
             });
             // Navigate to another screen
-            navigation.navigate('EventsPage');
+            navigation.navigate('MainTabs');
         } catch (error) {
             console.error("Error during sign-up:", error.message);
 
@@ -84,6 +84,7 @@ export default function SignUp({ navigation }) {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.textTitle}>Sign in</Text>
             <TextInput
                 style={styles.inputText}
                 placeholder="Enter email"
