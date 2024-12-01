@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Pressable, TextInput, ActivityIndicator, Button } from 'react-native';
+import { View, Text, Pressable, TextInput, ActivityIndicator, Button, Switch } from 'react-native';
 import styles from './styles';
 
 export default function AddEvent({ navigation, onAddEvent }) {
@@ -101,10 +101,13 @@ export default function AddEvent({ navigation, onAddEvent }) {
                 value={organizer}
             />
 
-            {/* Favorite Toggle */}
-            <Pressable onPress={toggleFavorite}>
-                <Text>{isFavorite ? "Unfavorite" : "Favorite"}</Text>
-            </Pressable>
+            <View style={styles.switchContainer}>
+                <Text>Favorite</Text>
+                <Switch
+                    value={isFavorite}
+                    onValueChange={setIsFavorite}
+                />
+            </View>
 
             {errorMessage.length > 0 && (
                 <View>

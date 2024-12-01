@@ -1,11 +1,13 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Favorite from '../Favorite/Favorite';
-import AddEvent from '../AddEvent/AddEvent';
-import EventsPage from '../EventsPage/EventsPage';
 import { AntDesign } from '@expo/vector-icons';
-import { save } from '../../../database/write';
 import { useState } from 'react';
 import AppLoader from '../../AppLoader';
+import EventsPage from '../EventsPage/EventsPage';
+import Favorite from '../Favorite/Favorite';
+import AddEvent from '../AddEvent/AddEvent';
+import { save } from '../../../database/write';
+import Details from '../EventsPage/Details/Details';
+import EditEvent from '../EventsPage/EditEvent/EditEvent'
 
 const Tab = createBottomTabNavigator();
 
@@ -51,49 +53,71 @@ export default function TabNavigator({ route }) {
         setIsLoading(false);
     };
 
+    // If loading data, show the AppLoader component
+    if (isLoading) {
+        return <AppLoader onEventsLoaded={handleEventsLoaded} />;
+    }
+
     return (
-        <>
-            <AppLoader onEventsLoaded={handleEventsLoaded} />
-            <Tab.Navigator>
-                <Tab.Screen
-                    name="EventsPage"
-                    options={{ headerShown: false }}
-                >
-                    {(props) => (
-                        <EventsPage
-                            {...props}
-                            events={events}
-                            onEventsLoaded={handleEventsLoaded}
-                            isLoading={isLoading}
-                            fullName={fullName}
-                        />
-                    )}
-                </Tab.Screen>
+        <Tab.Navigator
+            screenOptions={{
+                tabBarStyle: {
+                    backgroundColor: '#22CA54', // Set tab bar color
+                    borderTopWidth: 0, // Remove the border
+                },
+                tabBarActiveTintColor: 'white', // Active tab color
+                tabBarInactiveTintColor: 'gray', // Inactive tab color
+                tabBarLabelStyle: {
+                    fontSize: 12, // Adjust font size of tab text
+                    fontWeight: 'bold', // Optional: Make the text bold
+                },
+            }}
+        >
+            <Tab.Screen
+                name="EventsPage"
+                options={{ headerShown: false }}
+            >
+                {(props) => (
+                    <EventsPage
+                        {...props}
+                        events={events}
+                        onEventsLoaded={handleEventsLoaded}
+                        isLoading={isLoading}
+                        fullName={fullName}
+                        userId={userId}
+                    />
+                )}
+            </Tab.Screen>
 
-                <Tab.Screen
-                    name="Favorite"
-                    component={Favorite}
-                    options={{ headerShown: false }}
-                />
+            <Tab.Screen
+                name="Favorite"
+                component={Favorite}
+                options={{ headerShown: false }}
+            />
 
-                <Tab.Screen
-                    name="AddEvent"
-                    options={{
-                        headerShown: false,
-                        tabBarIcon: ({ size, color }) => (
-                            <AntDesign name="addfile" size={size} color={color} />
-                        ),
-                    }}
-                >
-                    {(props) => (
-                        <AddEvent
-                            {...props}
-                            events={events}
-                            onAddEvent={handleAddEvent}
-                        />
-                    )}
-                </Tab.Screen>
-            </Tab.Navigator>
-        </>
+            <Tab.Screen
+                name="AddEvent"
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({ size, color }) => (
+                        <AntDesign name="addfile" size={size} color={color} />
+                    ),
+                }}
+            >
+                {(props) => (
+                    <AddEvent
+                        {...props}
+                        events={events}
+                        onAddEvent={handleAddEvent}
+                    />
+                )}
+            </Tab.Screen>
+            <Tab.Screen
+                name="Details"
+                component={Details} />
+            <Tab.Screen
+                name="EditEvent"
+                component={EditEvent} />
+        </Tab.Navigator>
     );
 }

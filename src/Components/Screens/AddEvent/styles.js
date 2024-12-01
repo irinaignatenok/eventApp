@@ -16,4 +16,10 @@ export default StyleSheet.create({
         marginTop: 10,
         backgroundColor: '#fff'
     },
+    switchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 10,
+        marginRight: 10
+    },
 })

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { View, Text, Pressable, FlatList } from 'react-native';
+import { View, Text, Pressable, FlatList, Alert } from 'react-native';
 import * as database from '../../../database/index';
 import EventItem from './EventItem/EventItem';
+// import { deleteEvent, ediEvent } from '../../../database/index';
 
-export default function EventsPage({ navigation, events, onEventsLoaded, isLoading, fullName }) {
+export default function EventsPage({ navigation, events, onEventsLoaded, isLoading, fullName, userId }) {
 
     useEffect(() => {
-        console.log("Events in EventsPage:", events);  // Log the events prop
+        console.log("Events in EventsPage:", events);
     }, [events]);
     useEffect(() => {
         const loadData = async () => {
@@ -32,13 +33,45 @@ export default function EventsPage({ navigation, events, onEventsLoaded, isLoadi
     const handleEventPress = (event) => {
         navigation.navigate('Details', { event, events });
     };
+    const handleEditEvent = (event) => {
+        // Navigate to an Edit screen (assuming `EventEditPage` exists)
+        navigation.navigate('EditEvent', { event });
+    };
+    const handleDeleteEvent = (eventId) => {
+        Alert.alert(
+            "Delete Event",
+            "Are you sure you want to delete this event?",
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Delete",
+                    onPress: async () => {
+                        try {
+                            await database.deleteEvent(eventId);
+                            onEventsLoaded(events.filter(event => event.id !== eventId));
+                        } catch (error) {
+                            console.error("Error deleting from UI:", error);
+                        }
+                    }
+                }
+            ]
+        );
+    };
 
     const renderItem = ({ item }) => (
         <Pressable onPress={() => handleEventPress(item)}>
-            <EventItem event={item} />
+            <EventItem event={item}
+                // onFavoriteToggle={handleFavoriteToggle}
+                userId={userId}
+                onEdit={handleEditEvent}
+                onDelete={handleDeleteEvent}
+            />
         </Pressable>
     );
 
+    // const handleFavoriteToggle = (eventId, newFavoriteStatus) => {
+    //     console.log(`Event ID: ${eventId}, New Favorite Status: ${newFavoriteStatus}`);
+    // };
 
     const renderSeparator = () => <View style={{ height: 1, backgroundColor: '#ccc' }} />;
 

@@ -1,2 +1,2 @@
 export { load, loadById } from './read'
-export { save, update } from './write';
+export { save, update, deleteEvent, ediEvent } from './write';

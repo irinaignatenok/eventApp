@@ -65,6 +65,9 @@ export default function LoginScreen({ navigation }) {
         }
     }
 
+    const onRegister = () => {
+        navigation.navigate('SignUp')
+    }
 
     useEffect(() => {
         if (fullname) {
@@ -103,6 +106,11 @@ export default function LoginScreen({ navigation }) {
             >
                 <Text style={styles.textStyle}>Sign In</Text>
             </TouchableOpacity>
+            <Text style={styles.text}>Not registered yet? </Text>
+            <TouchableOpacity onPress={onRegister}>
+                <Text style={styles.link}>Register</Text>
+            </TouchableOpacity>
+
         </View>
     )
 }
