@@ -17,12 +17,19 @@ function processQuerySnapshot(querySnapshot) {
     return data
 }
 
-export async function loadById(id) {
-    const docRef = doc(db, 'events', id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-        return docSnap.data();
-    } else {
-        return null
+export async function loadById(userId) {
+    try {
+        const docRef = doc(db, "users", userId); // Replace 'users' with your collection name
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            return docSnap.data();
+        } else {
+            console.warn("No such document!");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching document:", error);
+        throw error;
     }
 }

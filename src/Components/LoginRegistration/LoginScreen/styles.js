@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: '#0E1B3C',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
@@ -39,5 +39,16 @@ export default StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         color: 'red'
+    },
+    text: {
+        color: 'white',
+        fontSize: 16,
+        marginTop: 10
+    },
+    link: {
+        color: 'white',
+        textDecorationLine: 'underline',
+        fontWeight: 'bold',
+        marginLeft: 4,
     },
 });

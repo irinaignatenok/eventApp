@@ -3,7 +3,7 @@ import { View, Text, Pressable, FlatList } from 'react-native';
 import * as database from '../../../database/index';
 import EventItem from './EventItem/EventItem';
 
-export default function EventsPage({ navigation, events, onEventsLoaded, isLoading }) {
+export default function EventsPage({ navigation, events, onEventsLoaded, isLoading, fullName }) {
 
     useEffect(() => {
         console.log("Events in EventsPage:", events);  // Log the events prop
@@ -44,6 +44,7 @@ export default function EventsPage({ navigation, events, onEventsLoaded, isLoadi
 
     return (
         <View style={{ flex: 1 }}>
+            <Text> Welcome, {fullName}</Text>
             {isLoading ? (
                 <Text>Loading Events...</Text>
             ) : (
