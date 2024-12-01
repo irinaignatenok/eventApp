@@ -48,7 +48,6 @@ export default function TabNavigator({ route }) {
     };
 
     const handleEventsLoaded = (loadedEvents) => {
-        console.log("Loaded events:", loadedEvents);
         setEvents(loadedEvents);
         setIsLoading(false);
     };
@@ -112,12 +111,8 @@ export default function TabNavigator({ route }) {
                     />
                 )}
             </Tab.Screen>
-            <Tab.Screen
-                name="Details"
-                component={Details} />
-            <Tab.Screen
-                name="EditEvent"
-                component={EditEvent} />
+
+
         </Tab.Navigator>
     );
 }

@@ -33,3 +33,22 @@ export async function loadById(userId) {
         throw error;
     }
 }
+
+
+export async function loadFavorites() {
+    try {
+        const querySnapshot = await getDocs(collection(db, 'events'));
+        const eventsList = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+
+        // Return both all events and filtered favorite events
+        const favoriteEvents = eventsList.filter(event => event.isFavorite === true);
+
+        return { allEvents: eventsList, favoriteEvents };
+    } catch (error) {
+        console.error('Error loading events:', error);
+        throw error;
+    }
+}

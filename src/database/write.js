@@ -48,3 +48,13 @@ export async function deleteEvent(eventId) {
         console.error("Error deleting event:", error);
     }
 }
+export const updateEvent = async (eventId, updatedEventData) => {
+    try {
+        const eventRef = doc(db, "events", eventId); // Use db object here
+        await updateDoc(eventRef, updatedEventData); // Use updateDoc to update the document
+        console.log("Event successfully updated.");
+    } catch (error) {
+        console.error("Error updating event in Firestore:", error);
+        throw error;
+    }
+};

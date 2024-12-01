@@ -1,64 +1,83 @@
-import { View, Text, Pressable, FlatList, Alert, TouchableOpacity, Modal, TextInput } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-import * as database from '../../../../database';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    Modal,
+    TextInput,
+    Switch,
+    Alert,
+    ActivityIndicator
+} from 'react-native';
+import { useState } from 'react';
 import styles from './styles';
-import { useState, useEffect } from 'react';
+import * as database from '../../../../database';
 
-
-export default function EventItem({ event, onFavoriteToggle, onEdit, onDelete, userId }) {
-
-    console.log("Item ", event)
+export default function EventItem({ event, onEdit, onDelete, userId }) {
     const [showModal, setShowModal] = useState(false);
-    const [favorite, setFavorite] = useState(event.isFavorite);
     const [editableEvent, setEditableEvent] = useState({ ...event });
-    // const [favorite, setFavorite] = useState(false);
-    useEffect(() => {
-        setFavorite(event.isFavorite); // Ensure state sync with passed data
-    }, [event.isFavorite])
+    const [isFavorite, setIsFavorite] = useState(event.isFavorite);
+    const [isLoading, setIsLoading] = useState(false); // Track loading state
 
     const handleSave = async () => {
         if (!editableEvent.eventName || !editableEvent.date || !editableEvent.location) {
             Alert.alert("Error", "Please fill in all fields.");
             return;
         }
-
         try {
-            await database.updateEvent(editableEvent.id, editableEvent); // Save to database
-            Alert.alert("Success", "Event updated successfully.");
+            await database.updateEvent(editableEvent.id, editableEvent);
             setShowModal(false);
-            onEdit(editableEvent); // Update the UI
+            onEdit(editableEvent);
+            Alert.alert("Success", "Event updated successfully.");
         } catch (error) {
             Alert.alert("Error", "Failed to update event. Please try again.");
             console.error(error);
         }
     };
 
-    // const toggleFavorite = () => {
-    //     setFavorite(!favorite);
-    //     onFavoriteToggle(event.id, !favorite); // Notify parent about favorite toggle
-    // };
+    const toggleFavoriteStatus = async (value) => {
+        setIsLoading(true); // Start loader
+        try {
+            await database.updateEvent(event.id, { isFavorite: value });
+            setIsFavorite(value); // Update only after Firestore succeeds
+            Alert.alert(
+                "Success",
+                value ? "Event added to favorites." : "Event removed from favorites."
+            );
+        } catch (error) {
+            Alert.alert("Error", "Failed to update favorite status.");
+            console.error(error);
+        } finally {
+            setIsLoading(false); // Stop loader
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.card}>
                 <Text style={styles.title}>{event.eventName}</Text>
                 <Text style={styles.date}>{event.date}</Text>
                 <Text style={styles.location}>{event.location}</Text>
-                <Text style={styles.organizer}>{event.organizer}</Text>
                 <Text style={styles.description}>{event.description}</Text>
-                {/* Favorite button */}
-                {/* <View style={styles.favoriteContainer}>
-                    <TouchableOpacity onPress={toggleFavorite}>
-                        <AntDesign
-                            name={favorite ? 'heart' : 'hearto'}
-                            size={24}
-                            color={favorite ? 'red' : '#888'}
+
+                {/* Dynamically Change Text */}
+                <Text style={styles.favoriteText}>
+                    {isFavorite ? 'Favorite' : 'Not Favorite'}
+                </Text>
+
+                <View style={styles.switchContainer}>
+                    <Text>Toggle Favorite</Text>
+                    {isLoading ? (
+                        <ActivityIndicator size="small" color="#0000ff" />
+                    ) : (
+                        <Switch
+                            value={isFavorite}
+                            onValueChange={toggleFavoriteStatus}
+                            disabled={isLoading} // Disable switch during update
                         />
-                    </TouchableOpacity>
-                    <Text style={styles.favorite}>{favorite ? 'Favorite' : 'Not Favorite'}</Text>
-                </View> */}
-                <Text style={styles.favorite}>{event.isFavorite ? 'Favorite' : 'Not Favorite'}</Text>
-                {/* Edit and Delete buttons */}
-                {userId === event.userId && ( // Check if the logged-in user is the creator of the event
+                    )}
+                </View>
+
+                {userId === event.userId && (
                     <View style={styles.actionButtons}>
                         <TouchableOpacity onPress={() => setShowModal(true)}>
                             <Text style={styles.editButton}>Edit</Text>
@@ -68,7 +87,7 @@ export default function EventItem({ event, onFavoriteToggle, onEdit, onDelete, u
                         </TouchableOpacity>
                     </View>
                 )}
-                {/* Edit Modal */}
+
                 <Modal
                     animationType="slide"
                     transparent={true}

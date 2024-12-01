@@ -92,9 +92,7 @@ export default function LoginScreen({ navigation }) {
                 onChangeText={(text) => setUserCredential({ ...userCredential, password: text })}
             />
 
-            {userCredential.error && (
-                <Text style={styles.textError}>{userCredential.error}</Text>
-            )}
+
             {userCredential.error ? (
                 <View>
                     <Text style={styles.textError}>{userCredential.error}</Text>
