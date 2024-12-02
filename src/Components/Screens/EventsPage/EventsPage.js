@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Text, FlatList, Alert } from 'react-native';
 import * as database from '../../../database/index';
 import EventItem from './EventItem/EventItem';
+import styles from './styles';
 
 export default function EventsPage({ navigation, events, onEventsLoaded, isLoading, fullName, userId, onToggle }) {
     useEffect(() => {
@@ -57,10 +58,10 @@ export default function EventsPage({ navigation, events, onEventsLoaded, isLoadi
             onToggle={onToggle}
         />
     );
-
+    console.log("Full Name:", fullName);
     return (
-        <View style={{ flex: 1 }}>
-            <Text>Welcome, {fullName}</Text>
+        <View style={styles.container}>
+            <Text style={styles.textStyle}>Welcome {fullName}</Text>
             {isLoading ? (
                 <Text>Loading Events...</Text>
             ) : (

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Pressable, TextInput, ActivityIndicator, Button, Switch } from 'react-native';
+import { View, Text, TextInput, ActivityIndicator, Switch, TouchableOpacity } from 'react-native';
 import styles from './styles';
 
 export default function AddEvent({ navigation, onAddEvent }) {
@@ -8,7 +8,7 @@ export default function AddEvent({ navigation, onAddEvent }) {
     const [location, setLocation] = useState('');
     const [organizer, setOrganizer] = useState('');
     const [description, setDescription] = useState('');
-    const [isFavorite, setIsFavorite] = useState(false); // Manage favorite field
+    const [isFavorite, setIsFavorite] = useState(false);
     const [errorMessage, setErrorMessage] = useState([]);
     const [savingData, setSavingData] = useState(false);
 
@@ -17,7 +17,7 @@ export default function AddEvent({ navigation, onAddEvent }) {
     const handleDateChange = (value) => setDate(value);
     const handleLocationChange = (value) => setLocation(value);
     const handleOrganizerChange = (value) => setOrganizer(value);
-    const toggleFavorite = () => setIsFavorite(prevState => !prevState); // Toggle favorite
+    const toggleFavorite = () => setIsFavorite(prevState => !prevState);
 
     const handleAddPress = async () => {
         const validate = [];
@@ -30,10 +30,9 @@ export default function AddEvent({ navigation, onAddEvent }) {
         if (validate.length > 0) {
             setErrorMessage(validate);
         } else {
-            setErrorMessage([]); // Clear previous errors
+            setErrorMessage([]);
             setSavingData(true);
 
-            // Call the onAddEvent function to save the data
             const result = await onAddEvent(eventName, date, location, organizer, description, isFavorite);
 
             if (result.success) {
@@ -43,10 +42,10 @@ export default function AddEvent({ navigation, onAddEvent }) {
                 setLocation('');
                 setOrganizer('');
                 setDescription('');
-                setIsFavorite(false); // Reset favorite
+                setIsFavorite(false);
                 navigation.navigate('EventsPage');
             } else {
-                // Handle failure
+
                 setErrorMessage([result.message || "Failed to add event. Please try again."]);
             }
 
@@ -64,7 +63,7 @@ export default function AddEvent({ navigation, onAddEvent }) {
     }
 
     return (
-        <View style={styles.formContainer}>
+        <View style={styles.container}>
             <TextInput
                 style={styles.textInput}
                 placeholder="Enter event name"
@@ -102,7 +101,7 @@ export default function AddEvent({ navigation, onAddEvent }) {
             />
 
             <View style={styles.switchContainer}>
-                <Text>Favorite</Text>
+                <Text style={styles.textStyle}>Favorite</Text>
                 <Switch
                     value={isFavorite}
                     onValueChange={setIsFavorite}
@@ -116,8 +115,13 @@ export default function AddEvent({ navigation, onAddEvent }) {
                     ))}
                 </View>
             )}
+            <TouchableOpacity
+                style={styles.buttonStyle}
+                onPress={handleAddPress}
+            >
+                <Text style={styles.textStyle}>Add Event</Text>
+            </TouchableOpacity>
 
-            <Button title="Add Event" onPress={handleAddPress} />
         </View>
     );
 }

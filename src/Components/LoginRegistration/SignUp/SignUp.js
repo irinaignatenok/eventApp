@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { auth, db } from '../../../database/config'; // Import Firestore DB config
+import { auth, db } from '../../../database/config';
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
-import { setDoc, doc } from 'firebase/firestore'; // Import Firestore methods
+import { setDoc, doc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import styles from './styles';
 
@@ -13,8 +13,8 @@ export default function SignUp({ navigation }) {
         error: "",
     });
 
-    const [loading, setLoading] = useState(false); // State to track loading
-    const [buttonDisabled, setButtonDisabled] = useState(false); // To disable the button during sign-up
+    const [loading, setLoading] = useState(false);
+    const [buttonDisabled, setButtonDisabled] = useState(false);
 
     const handleInputChange = (field, value) => {
         setUserCredential({ ...userCredential, [field]: value });
@@ -23,7 +23,7 @@ export default function SignUp({ navigation }) {
     const checkUserExists = async (email) => {
         try {
             const methods = await fetchSignInMethodsForEmail(auth, email);
-            return methods.length > 0; // Return true if the user exists
+            return methods.length > 0;
         } catch (error) {
             console.error("Error checking user existence:", error);
             return false;
@@ -48,7 +48,7 @@ export default function SignUp({ navigation }) {
     const signUp = async () => {
         const { email, password, fullName } = userCredential;
 
-        // Basic validation
+
         if (!email || !password || !fullName) {
             setUserCredential({
                 ...userCredential,
@@ -67,7 +67,7 @@ export default function SignUp({ navigation }) {
             return;
         }
 
-        // Password validation (length check)
+
         if (password.length < 6) {
             setUserCredential({
                 ...userCredential,
@@ -76,7 +76,7 @@ export default function SignUp({ navigation }) {
             return;
         }
 
-        // Set loading state to true
+
         setLoading(true);
         setButtonDisabled(true);
 
@@ -99,7 +99,7 @@ export default function SignUp({ navigation }) {
             navigation.navigate('MainTabs', { fullName, userId: res.user.uid });
 
         } catch (error) {
-            console.error("Error during sign-up:", error.message);
+
             if (error.code === 'auth/email-already-in-use') {
                 setUserCredential({
                     ...userCredential,
@@ -112,7 +112,7 @@ export default function SignUp({ navigation }) {
                 });
             }
         } finally {
-            // Reset loading state after the sign-up process
+
             setLoading(false);
             setButtonDisabled(false);
         }
@@ -154,7 +154,7 @@ export default function SignUp({ navigation }) {
                 disabled={buttonDisabled}
             >
                 {loading ? (
-                    <ActivityIndicator size="small" color="#ffffff" /> // Show loading spinner
+                    <ActivityIndicator size="small" color="#ffffff" />
                 ) : (
                     <Text style={styles.textStyle}>Sign Up</Text>
                 )}

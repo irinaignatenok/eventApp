@@ -40,14 +40,14 @@ export default function App() {
                   signOut(auth)
                     .then(() => {
                       console.log('User logged out');
-                      navigation.navigate('Login'); // Navigate to Login after logout
+                      navigation.navigate('Login');
                     })
                     .catch((error) => {
-                      console.error("Error logging out:", error.message); // Log the error message
+                      console.error("Error logging out:", error.message);
                     });
                 }}
               >
-                <Text>Logout</Text>
+                <Text style={styles.textStyle}>Logout</Text>
               </TouchableOpacity>
             ),
           })}
@@ -64,5 +64,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
+  }, textStyle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#0E1B3C'
+  }
 });

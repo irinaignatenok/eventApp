@@ -1,8 +1,7 @@
 
-import { StatusBar } from "expo-status-bar";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { auth } from '../../../database/config';
 import styles from './styles';
 import { loadById } from "../../../database/index";
@@ -55,7 +54,7 @@ export default function LoginScreen({ navigation }) {
             const userCredentialResponse = await signInWithEmailAndPassword(auth, userCredential.email, userCredential.password);
             const user = userCredentialResponse.user;
             setUserId(user.uid);
-            console.log("User signed in:", user.email, user.uid);
+
         } catch (error) {
             console.error("Sign-in error:", error.message);
             setUserCredential({

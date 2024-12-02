@@ -6,8 +6,8 @@ import EventsPage from '../EventsPage/EventsPage';
 import Favorite from '../Favorite/Favorite';
 import AddEvent from '../AddEvent/AddEvent';
 import { save, updateEvent } from '../../../database/write';
-
-
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Fontisto from '@expo/vector-icons/Fontisto';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,9 +15,8 @@ export default function TabNavigator({ route }) {
     const [events, setEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Extracting userId and fullName from route.params
     const { userId, fullName } = route.params;
-
+    console.log("My full Name", fullName)
     const handleAddEvent = async (eventName, date, location, organizer, description, isFavorite) => {
         console.log("Adding new event...");
         try {
@@ -52,17 +51,14 @@ export default function TabNavigator({ route }) {
         setIsLoading(false);
     };
 
-    // If loading data, show the AppLoader component
     if (isLoading) {
         return <AppLoader onEventsLoaded={handleEventsLoaded} />;
     }
 
     const handleToggleFavorite = async (eventId, newValue) => {
         try {
-            // Update the event's favorite status in the database
-            await updateEvent(eventId, { isFavorite: newValue });
 
-            // Optimistically update the event's favorite status in the state
+            await updateEvent(eventId, { isFavorite: newValue });
             setEvents(prevEvents => {
                 return prevEvents.map(event =>
                     event.id === eventId ? { ...event, isFavorite: newValue } : event
@@ -76,20 +72,25 @@ export default function TabNavigator({ route }) {
         <Tab.Navigator
             screenOptions={{
                 tabBarStyle: {
-                    backgroundColor: '#22CA54', // Set tab bar color
-                    borderTopWidth: 0, // Remove the border
+                    backgroundColor: '#22CA54',
+                    borderTopWidth: 0,
                 },
-                tabBarActiveTintColor: 'white', // Active tab color
-                tabBarInactiveTintColor: 'gray', // Inactive tab color
+                tabBarActiveTintColor: 'white',
+                tabBarInactiveTintColor: 'gray',
                 tabBarLabelStyle: {
-                    fontSize: 12, // Adjust font size of tab text
-                    fontWeight: 'bold', // Optional: Make the text bold
+                    fontSize: 12,
+                    fontWeight: 'bold',
                 },
             }}
         >
             <Tab.Screen
                 name="EventsPage"
-                options={{ headerShown: false }}
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({ size, color }) => (
+                        <FontAwesome6 name="list" size={size} color={color} />
+                    ),
+                }}
             >
                 {(props) => (
                     <EventsPage
@@ -106,13 +107,19 @@ export default function TabNavigator({ route }) {
 
             <Tab.Screen
                 name="Favorite"
-                options={{ headerShown: false }}
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({ size, color }) => (
+                        <Fontisto name="favorite" size={size} color={color} />
+                    ),
+                }}
             >
                 {(props) => (
                     <Favorite
                         {...props}
                         events={events}
                         onToggle={handleToggleFavorite}
+                        userId={userId}
                     />
                 )}
             </Tab.Screen>
@@ -134,8 +141,6 @@ export default function TabNavigator({ route }) {
                     />
                 )}
             </Tab.Screen>
-
-
         </Tab.Navigator>
     );
 }

@@ -99,4 +99,30 @@ export default StyleSheet.create({
         borderRadius: 5,
         textAlign: 'center',
     },
+    favoriteText: {
+        fontSize: 14,
+        color: 'yellow',
+        fontWeight: 'bold',
+        marginTop: 10,
+    },
+    actionButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: 15,
+    }, buttonStyle: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 40,
+        width: '45%',
+        backgroundColor: '#22CA54',
+        borderRadius: 10,
+        marginVertical: 5,
+    }, buttonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 14,
+    }, deleteButton: {
+        backgroundColor: '#f44336'
+    }
+
 })

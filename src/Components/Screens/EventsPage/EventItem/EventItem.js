@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import { useState } from 'react';
 import styles from './styles';
-import * as database from '../../../../database'; // Import your Firebase database functions
+import * as database from '../../../../database';
+
 
 export default function EventItem({ event, onEdit, onDelete, userId, onToggle }) {
     const [showModal, setShowModal] = useState(false);
@@ -19,20 +20,20 @@ export default function EventItem({ event, onEdit, onDelete, userId, onToggle })
     const [isLoading, setIsLoading] = useState(false);
 
     const toggleFavoriteStatus = async (newValue) => {
-        setIsLoading(true); // Show loader
-        setIsFavorite(newValue); // Optimistically update UI
+        setIsLoading(true);
+        setIsFavorite(newValue);
         try {
-            await onToggle(event.id, newValue); // Call the onToggle prop to update favorite status
+            await onToggle(event.id, newValue);
             Alert.alert(
                 "Success",
                 newValue ? "Event marked as Favorite." : "Event removed from Favorites."
             );
         } catch (error) {
             Alert.alert("Error", "Failed to update favorite status.");
-            setIsFavorite(!newValue); // Revert UI if update fails
+            setIsFavorite(!newValue);
             console.error("Error updating favorite status:", error);
         } finally {
-            setIsLoading(false); // Hide loader
+            setIsLoading(false);
         }
     };
 
@@ -60,31 +61,31 @@ export default function EventItem({ event, onEdit, onDelete, userId, onToggle })
                 <Text style={styles.location}>{event.location}</Text>
                 <Text style={styles.description}>{event.description}</Text>
 
-                {/* Dynamically Show Favorite Status */}
+
                 <Text style={styles.favoriteText}>
                     {isFavorite ? 'Favorite' : 'Not Favorite'}
                 </Text>
 
                 <View style={styles.switchContainer}>
-                    <Text>Toggle Favorite</Text>
+
                     {isLoading ? (
                         <ActivityIndicator size="small" color="#0000ff" />
                     ) : (
                         <Switch
                             value={isFavorite}
                             onValueChange={toggleFavoriteStatus}
-                            disabled={isLoading} // Disable switch while updating
+                            disabled={isLoading}
                         />
                     )}
                 </View>
 
                 {userId === event.userId && (
                     <View style={styles.actionButtons}>
-                        <TouchableOpacity onPress={() => setShowModal(true)}>
-                            <Text style={styles.editButton}>Edit</Text>
+                        <TouchableOpacity onPress={() => setShowModal(true)} style={styles.buttonStyle}>
+                            <Text style={styles.buttonText}>Edit</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => onDelete(event.id)}>
-                            <Text style={styles.deleteButton}>Delete</Text>
+                        <TouchableOpacity onPress={() => onDelete(event.id)} style={[styles.buttonStyle, styles.deleteButton]}>
+                            <Text style={styles.buttonText}>Delete</Text>
                         </TouchableOpacity>
                     </View>
                 )}
