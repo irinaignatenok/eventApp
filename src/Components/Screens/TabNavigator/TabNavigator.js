@@ -5,9 +5,9 @@ import AppLoader from '../../AppLoader';
 import EventsPage from '../EventsPage/EventsPage';
 import Favorite from '../Favorite/Favorite';
 import AddEvent from '../AddEvent/AddEvent';
-import { save } from '../../../database/write';
-import Details from '../EventsPage/Details/Details';
-import EditEvent from '../EventsPage/EditEvent/EditEvent'
+import { save, updateEvent } from '../../../database/write';
+
+
 
 const Tab = createBottomTabNavigator();
 
@@ -57,6 +57,21 @@ export default function TabNavigator({ route }) {
         return <AppLoader onEventsLoaded={handleEventsLoaded} />;
     }
 
+    const handleToggleFavorite = async (eventId, newValue) => {
+        try {
+            // Update the event's favorite status in the database
+            await updateEvent(eventId, { isFavorite: newValue });
+
+            // Optimistically update the event's favorite status in the state
+            setEvents(prevEvents => {
+                return prevEvents.map(event =>
+                    event.id === eventId ? { ...event, isFavorite: newValue } : event
+                );
+            });
+        } catch (error) {
+            console.error('Error updating favorite status:', error);
+        }
+    };
     return (
         <Tab.Navigator
             screenOptions={{
@@ -84,15 +99,23 @@ export default function TabNavigator({ route }) {
                         isLoading={isLoading}
                         fullName={fullName}
                         userId={userId}
+                        onToggle={handleToggleFavorite}
                     />
                 )}
             </Tab.Screen>
 
             <Tab.Screen
                 name="Favorite"
-                component={Favorite}
                 options={{ headerShown: false }}
-            />
+            >
+                {(props) => (
+                    <Favorite
+                        {...props}
+                        events={events}
+                        onToggle={handleToggleFavorite}
+                    />
+                )}
+            </Tab.Screen>
 
             <Tab.Screen
                 name="AddEvent"

@@ -3,7 +3,7 @@ import { View, Text, FlatList, Alert } from 'react-native';
 import * as database from '../../../database/index';
 import EventItem from './EventItem/EventItem';
 
-export default function EventsPage({ navigation, events, onEventsLoaded, isLoading, fullName, userId }) {
+export default function EventsPage({ navigation, events, onEventsLoaded, isLoading, fullName, userId, onToggle }) {
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -54,6 +54,7 @@ export default function EventsPage({ navigation, events, onEventsLoaded, isLoadi
             userId={userId}
             onEdit={handleEditEvent}
             onDelete={handleDeleteEvent}
+            onToggle={onToggle}
         />
     );
 

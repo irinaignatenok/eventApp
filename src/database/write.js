@@ -58,3 +58,16 @@ export const updateEvent = async (eventId, updatedEventData) => {
         throw error;
     }
 };
+
+export const toggleFavoriteStatus = async (eventId, newStatus) => {
+    try {
+        const eventRef = doc(db, 'events', eventId);
+        await updateDoc(eventRef, {
+            isFavorite: newStatus
+        });
+        console.log("Event updated successfully.");
+    } catch (error) {
+        console.error("Error updating favorite status:", error);
+        throw error;
+    }
+};

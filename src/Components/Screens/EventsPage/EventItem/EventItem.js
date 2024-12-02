@@ -6,17 +6,35 @@ import {
     TextInput,
     Switch,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
 } from 'react-native';
 import { useState } from 'react';
 import styles from './styles';
-import * as database from '../../../../database';
+import * as database from '../../../../database'; // Import your Firebase database functions
 
-export default function EventItem({ event, onEdit, onDelete, userId }) {
+export default function EventItem({ event, onEdit, onDelete, userId, onToggle }) {
     const [showModal, setShowModal] = useState(false);
     const [editableEvent, setEditableEvent] = useState({ ...event });
     const [isFavorite, setIsFavorite] = useState(event.isFavorite);
-    const [isLoading, setIsLoading] = useState(false); // Track loading state
+    const [isLoading, setIsLoading] = useState(false);
+
+    const toggleFavoriteStatus = async (newValue) => {
+        setIsLoading(true); // Show loader
+        setIsFavorite(newValue); // Optimistically update UI
+        try {
+            await onToggle(event.id, newValue); // Call the onToggle prop to update favorite status
+            Alert.alert(
+                "Success",
+                newValue ? "Event marked as Favorite." : "Event removed from Favorites."
+            );
+        } catch (error) {
+            Alert.alert("Error", "Failed to update favorite status.");
+            setIsFavorite(!newValue); // Revert UI if update fails
+            console.error("Error updating favorite status:", error);
+        } finally {
+            setIsLoading(false); // Hide loader
+        }
+    };
 
     const handleSave = async () => {
         if (!editableEvent.eventName || !editableEvent.date || !editableEvent.location) {
@@ -34,23 +52,6 @@ export default function EventItem({ event, onEdit, onDelete, userId }) {
         }
     };
 
-    const toggleFavoriteStatus = async (value) => {
-        setIsLoading(true); // Start loader
-        try {
-            await database.updateEvent(event.id, { isFavorite: value });
-            setIsFavorite(value); // Update only after Firestore succeeds
-            Alert.alert(
-                "Success",
-                value ? "Event added to favorites." : "Event removed from favorites."
-            );
-        } catch (error) {
-            Alert.alert("Error", "Failed to update favorite status.");
-            console.error(error);
-        } finally {
-            setIsLoading(false); // Stop loader
-        }
-    };
-
     return (
         <View style={styles.container}>
             <View style={styles.card}>
@@ -59,7 +60,7 @@ export default function EventItem({ event, onEdit, onDelete, userId }) {
                 <Text style={styles.location}>{event.location}</Text>
                 <Text style={styles.description}>{event.description}</Text>
 
-                {/* Dynamically Change Text */}
+                {/* Dynamically Show Favorite Status */}
                 <Text style={styles.favoriteText}>
                     {isFavorite ? 'Favorite' : 'Not Favorite'}
                 </Text>
@@ -72,7 +73,7 @@ export default function EventItem({ event, onEdit, onDelete, userId }) {
                         <Switch
                             value={isFavorite}
                             onValueChange={toggleFavoriteStatus}
-                            disabled={isLoading} // Disable switch during update
+                            disabled={isLoading} // Disable switch while updating
                         />
                     )}
                 </View>
@@ -102,25 +103,33 @@ export default function EventItem({ event, onEdit, onDelete, userId }) {
                                 style={styles.input}
                                 placeholder="Event Name"
                                 value={editableEvent.eventName}
-                                onChangeText={(text) => setEditableEvent({ ...editableEvent, eventName: text })}
+                                onChangeText={(text) =>
+                                    setEditableEvent({ ...editableEvent, eventName: text })
+                                }
                             />
                             <TextInput
                                 style={styles.input}
                                 placeholder="Date"
                                 value={editableEvent.date}
-                                onChangeText={(text) => setEditableEvent({ ...editableEvent, date: text })}
+                                onChangeText={(text) =>
+                                    setEditableEvent({ ...editableEvent, date: text })
+                                }
                             />
                             <TextInput
                                 style={styles.input}
                                 placeholder="Location"
                                 value={editableEvent.location}
-                                onChangeText={(text) => setEditableEvent({ ...editableEvent, location: text })}
+                                onChangeText={(text) =>
+                                    setEditableEvent({ ...editableEvent, location: text })
+                                }
                             />
                             <TextInput
                                 style={styles.input}
                                 placeholder="Description"
                                 value={editableEvent.description}
-                                onChangeText={(text) => setEditableEvent({ ...editableEvent, description: text })}
+                                onChangeText={(text) =>
+                                    setEditableEvent({ ...editableEvent, description: text })
+                                }
                                 multiline
                             />
 
